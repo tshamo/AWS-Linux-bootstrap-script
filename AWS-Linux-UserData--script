@@ -1,0 +1,39 @@
+#!/bin/bash
+
+yum install -y httpd
+systemctl start httpd
+
+/sbin/chkconfig httpd on
+
+instanceId=$(curl http://169.254.169.254/latest/meta-data/instance-id)
+region=$(curl http://169.254.169.254/latest/dynamic/instance-identity/document | grep region | awk -F\" '{print $4}')
+az=$(curl http://169.254.169.254/latest/dynamic/instance-identity/document | grep Zone | awk -F\" '{print $4}')
+
+echo "<!DOCTYPE html>" > /var/www/html/index.html
+echo "<html>" >> /var/www/html/index.html
+echo "<body bgcolor="#ABB2B9">" >> /var/www/html/index.html
+echo "<h1>Hello world!</h1>" >> /var/www/html/index.html
+echo "<p><a href="https://www.inter.it">Visit inter.com!</a></p>" >> /var/www/html/index.html
+echo "<body bgcolor="#ABB2B9">" >> /var/www/html/index.html
+
+echo " " >> /var/www/html/index.html
+echo " " >> /var/www/html/index.html
+
+echo "Hello World from $instanceId <br>"  >> /var/www/html/index.html
+echo "Region $region  <br>" >> /var/www/html/index.html
+echo "AZ $az  <br>" >> /var/www/html/index.html
+
+echo " " >> /var/www/html/index.html
+echo " " >> /var/www/html/index.html
+
+echo "<h1>UNDER CONSTRUCTION</h1>" >> /var/www/html/index.html
+
+echo " " >> /var/www/html/index.html
+echo " " >> /var/www/html/index.html
+
+echo "<p>All rights reserved.</p>" >> /var/www/html/index.html
+
+echo "</body>" >> /var/www/html/index.html
+echo "</html>" >> /var/www/html/index.html
+
+aws ec2 create-tags --resources "$instanceId" --tags Key=Name,Value="Prod-$instanceId" --region "$region"
